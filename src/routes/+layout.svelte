@@ -5,7 +5,15 @@
 	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
+	import { goto } from '$app/navigation';
+	import { writable } from 'svelte/store';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
+
+	import { user } from '$lib/stores/user';
+
+	export let data;
+	let { supabase, session } = data;
+	$: ({ supabase, session } = data);
 </script>
 
 <!-- App Shell -->
@@ -14,36 +22,25 @@
 		<!-- App Bar -->
 		<AppBar>
 			<svelte:fragment slot="lead">
-				<strong class="text-xl uppercase">Skeleton</strong>
+				<strong class="text-xl uppercase">Sound Sculptor</strong>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://discord.gg/EXqV7W8MtY"
-					target="_blank"
-					rel="noreferrer"
-				>
-					Discord
-				</a>
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://twitter.com/SkeletonUI"
-					target="_blank"
-					rel="noreferrer"
-				>
-					Twitter
-				</a>
-				<a
-					class="btn btn-sm variant-ghost-surface"
-					href="https://github.com/skeletonlabs/skeleton"
-					target="_blank"
-					rel="noreferrer"
-				>
-					GitHub
-				</a>
+				{#if session && session.user}
+					<button
+						on:click={async () => {
+							await supabase.auth.signOut();
+							user.set(null);
+							goto('/auth/callback');
+						}}
+						class="btn px-4 py-2 variant-filled-surface"
+					>
+						Sign out
+					</button>
+				{/if}
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
 	<!-- Page Route Content -->
+
 	<slot />
 </AppShell>

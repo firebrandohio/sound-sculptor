@@ -1,16 +1,9 @@
 <script lang="ts">
-	import { faker } from '@faker-js/faker/locale/af_ZA';
 	import Comment from './Comment.svelte';
 	import TextDropdown from '../general/TextDropdown.svelte';
+	import type { CommentData } from './helpers';
 
-	export let data = {
-		username: faker.name.fullName(),
-		avatarURL: '',
-		text: faker.lorem.paragraph(5),
-		date: 'TEST: DATE',
-		children: [],
-		id: ''
-	};
+	export let data: CommentData;
 </script>
 
 <div class="flex flex-col my-2" id={data.id}>

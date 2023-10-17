@@ -47,7 +47,13 @@
 		<!-- App Bar -->
 		<AppBar>
 			<svelte:fragment slot="lead">
-				<strong class="text-base sm:text-xl uppercase">Sound Sculptor</strong>
+				<button
+					on:click={() => {
+						goto('/');
+					}}
+				>
+					<strong class="text-base sm:text-xl uppercase">Sound Sculptor</strong>
+				</button>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
 				{#if session && session.user && $user}

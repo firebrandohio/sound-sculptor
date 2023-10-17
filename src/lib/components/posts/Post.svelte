@@ -2,28 +2,11 @@
 	import TextDropdown from '../general/TextDropdown.svelte';
 	import PlaylistBlock from './PlaylistBlock.svelte';
 	import Icon from '@iconify/svelte';
-	import { faker } from '@faker-js/faker';
-	import CommentList from './CommentList.svelte';
 
-	export let data = {
-		playlistData: {
-			playlistURL: '',
-			playlistRank: 0,
-			playlistTitle: 'TEST: PLAYLIST TITLE',
-			userRank: 0,
-			isSubscribed: false
-		},
-		username: faker.name.fullName(),
-		avatarURL: '',
-		text: faker.lorem.paragraph(5),
-		date: 'TEST: DATE',
-		votes: -20,
-		comments: [],
-		id: '',
-		rank: 0,
-		status: 'TEST: STATUS',
-		userVote: 0
-	};
+	import CommentList from './CommentList.svelte';
+	import type { PostData } from './helpers';
+
+	export let data: PostData;
 
 	let commentsVisible = false;
 
@@ -65,7 +48,7 @@
 <div
 	class="flex flex-col w-full justify-center max-w-md md:max-w-3xl card p-2 xs:p-3 mx-4 my-8 variant-soft-secondary"
 >
-	<div class="flex md:flex-row flex-col md:align-end">
+	<div class="flex md:flex-row flex-col">
 		<PlaylistBlock data={data.playlistData} />
 		<div class="flex flex-col w-full md:max-w-md md:ml-6 md:h-full">
 			<div class="my-2 flex flex-row items-center">
@@ -88,8 +71,9 @@
 				</div>
 			</div>
 			<TextDropdown
-				containerClass="mt-2"
-				textClass="text-sm xs:text-base text-surface-300"
+				containerClass="mt-2 md:flex-grow flex items-start"
+				textClass="text-sm xs:text-base text-surface-300 md:text-sm"
+				expandedTextClass="md:overflow-y-scroll md:max-h-44"
 				expandIconClass="text-lg xs:text-xl text-surface-300"
 				hideIconClass="text-xl xs:text-2xl text-surface-300"
 			>
@@ -134,6 +118,10 @@
 		</div>
 	</div>
 	{#if commentsVisible}
-		<CommentList />
+		{#if data.comments.length > 0}
+			<CommentList data={data.comments} />
+		{:else}
+			<p class="text-center text-2xl text-surface-300">No comments found</p>
+		{/if}
 	{/if}
 </div>

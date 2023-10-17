@@ -6,6 +6,7 @@
 	export let containerClass = '';
 	export let expandIconClass = 'text-lg';
 	export let hideIconClass = 'text-xl';
+	export let expandedTextClass = 'text-base';
 
 	let open = startOpen;
 	const toggleDropdown = () => {
@@ -23,6 +24,6 @@
 		<button class="flex flex-row items-start justify-center" on:click={toggleDropdown}>
 			<Icon icon="ion:chevron-down" class={hideIconClass} on:click={toggleDropdown} />
 		</button>
-		<p class={textClass}><slot /></p>
+		<p class={textClass + ' ' + expandedTextClass}><slot /></p>
 	{/if}
 </div>

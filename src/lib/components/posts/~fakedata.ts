@@ -3,11 +3,12 @@ import { faker } from '@faker-js/faker';
 
 export const createFakeComment = (id: string, depth: number): CommentData => ({
     username: faker.internet.displayName(),
+    userId: faker.string.uuid(),
     avatarURL: faker.internet.avatar(),
     text: faker.lorem.paragraph(),
     date: faker.date.past(),
     children: depth > 0 ? Array.from({ length: faker.number.int({ min: 1, max: 3 }) }, () => createFakeComment(faker.string.uuid(), depth - 1)) : [],
-    id
+    id: faker.string.uuid()
 });
 
 export const createFakePost = (): PostData => ({

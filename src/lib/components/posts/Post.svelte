@@ -109,7 +109,7 @@
 				</div>
 				<button
 					class="btn btn-sm xs:btn-lg variant-filled-primary text-sm xs:text-lg font-semibold"
-					on:click={toggleComments}>{`${data.comments.length} Comments`}</button
+					on:click={toggleComments}>{`${data.comments?.length} Comments`}</button
 				>
 				<button class="btn btn-sm xs:btn-lg variant-filled-surface text-sm xs:text-lg font-semibold"
 					>Share</button
@@ -118,7 +118,7 @@
 		</div>
 	</div>
 	{#if commentsVisible}
-		{#if data.comments.length > 0}
+		{#if data.comments && data.comments.length > 0}
 			<CommentList data={data.comments} />
 		{:else}
 			<p class="text-center text-2xl text-surface-300">No comments found</p>

@@ -11,7 +11,7 @@ export type PostData = {
     text: string,
     date: Date,
     votes: number,
-    comments: Array<CommentData>,
+    comments: Array<CommentData> | null,
     id: string,
     rank: number,
     status: string,
@@ -20,6 +20,7 @@ export type PostData = {
 
 export type CommentData = {
     username: string,
+    userId: string,
     avatarURL: string | null,
     text: string,
     date: Date,

@@ -13,6 +13,7 @@ export const createFakeComment = (id: string, depth: number): CommentData => ({
 
 export const createFakePost = (): PostData => ({
     playlistData: {
+        playlistID: faker.string.uuid(),
         playlistURL: faker.internet.url(),
         playlistRank: faker.number.int({ min: 0, max: 5 }),
         playlistTitle: faker.lorem.words(),

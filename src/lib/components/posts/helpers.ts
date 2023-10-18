@@ -1,5 +1,8 @@
+import { type } from "os";
+
 export type PostData = {
     playlistData: {
+        playlistID: string,
         playlistURL: string,
         playlistRank: number,
         playlistTitle: string,
@@ -26,4 +29,35 @@ export type CommentData = {
     date: Date,
     children: Array<CommentData>,
     id: string
+};
+
+export type NewPostData = {
+    userID: string,
+    playlistID: string,
+    text: string,
+};
+
+export type NewCommentData = {
+    userID: string,
+    postID: string,
+    parent: string | null,
+    text: string,
+};
+
+export type NewVoteData = {
+    userID: string,
+    postID: string,
+    vote: -1 | 0 | 1
+};
+
+export type EditPostData = {
+    userID: string,
+    postID: string,
+    text: string
+};
+
+export type EditCommentData = {
+    userID: string,
+    commentID: string,
+    text: string
 };

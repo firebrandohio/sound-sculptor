@@ -61,7 +61,7 @@
 						class="btn btn-sm variant-soft-primary"
 						on:click={() => goto(`/users/${session?.user.id}`)}
 					>
-						<h4 class="h5 hidden sm:flex">{$user.display_name}</h4>
+						<p class="font-semibold text-sm sm:text-base hidden xs:flex">{$user.display_name}</p>
 						{#if $user?.images.length === 0}
 							<img
 								class="w-8 aspect-square"

@@ -25,35 +25,36 @@
 
 	onMount(() => {
 		//update profileBio on mount
-		userProfileBio.set(profile.bio);
-		userBio.set($userProfileBio);
-		console.log($userProfileBio);
+		if (profile.ownerData) {
+			userProfileBio.set(profile.bio);
+			userBio.set($userProfileBio);
 
-		newBioModalComponent = {
-			ref: BioModal,
-			props: {
-				type: 'new',
-				supabase,
-				session
-			}
-		};
-		editBioModalComponent = {
-			ref: BioModal,
-			props: {
-				type: 'edit',
-				supabase,
-				session
-			}
-		};
+			newBioModalComponent = {
+				ref: BioModal,
+				props: {
+					type: 'new',
+					supabase,
+					session
+				}
+			};
+			editBioModalComponent = {
+				ref: BioModal,
+				props: {
+					type: 'edit',
+					supabase,
+					session
+				}
+			};
 
-		newBioModal = {
-			type: 'component',
-			component: newBioModalComponent
-		};
-		editBioModal = {
-			type: 'component',
-			component: editBioModalComponent
-		};
+			newBioModal = {
+				type: 'component',
+				component: newBioModalComponent
+			};
+			editBioModal = {
+				type: 'component',
+				component: editBioModalComponent
+			};
+		}
 	});
 
 	let newBioModalComponent: ModalComponent;
@@ -142,7 +143,11 @@
 				{/if}
 			{:else}
 				<p class="text-sm sm:text-base text-surface-400 mx-4 text-center">
-					{$userProfileBio}
+					{#if profile.bio === ''}
+						{profile.display_name} has not added a bio yet.
+					{:else}
+						{profile.bio}
+					{/if}
 				</p>
 			{/if}
 		</div>

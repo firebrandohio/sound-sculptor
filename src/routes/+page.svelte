@@ -38,7 +38,7 @@
 				.eq('user_id', session.user.id)
 				.limit(1);
 
-			if (profile === null || error !== null) {
+			if (profile?.length === 0 || error !== null) {
 				//create profile
 
 				//get spotify id from spotify

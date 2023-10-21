@@ -43,8 +43,69 @@
 				provider: 'spotify'
 			});
 			await fetchUserData();
+			//check if profile exists
+
+			const { data: profile, error } = await supabase
+				.from('Profile')
+				.select('*')
+				.eq('user_id', session.user.id)
+				.limit(1);
+
+			if (profile?.length === 0 || error !== null) {
+				//create profile
+
+				//get spotify id from spotify
+				const response = await fetch('https://api.spotify.com/v1/me', {
+					method: 'GET',
+					headers: {
+						Authorization: `Bearer ${session?.provider_token}`
+					}
+				});
+
+				const spotifyData = await response.json();
+
+				await supabase
+					.from('Profile')
+					.insert({
+						user_id: session.user.id,
+						bio: '',
+						username: spotifyData.display_name,
+						spotify_id: spotifyData.id
+					})
+					.single();
+			}
 		} else if (session?.provider_token && !$user) {
 			await fetchUserData();
+
+			const { data: profile, error } = await supabase
+				.from('Profile')
+				.select('*')
+				.eq('user_id', session.user.id)
+				.limit(1);
+
+			if (profile?.length === 0 || error !== null) {
+				//create profile
+
+				//get spotify id from spotify
+				const response = await fetch('https://api.spotify.com/v1/me', {
+					method: 'GET',
+					headers: {
+						Authorization: `Bearer ${session?.provider_token}`
+					}
+				});
+
+				const spotifyData = await response.json();
+
+				await supabase
+					.from('Profile')
+					.insert({
+						user_id: session.user.id,
+						bio: '',
+						username: spotifyData.display_name,
+						spotify_id: spotifyData.id
+					})
+					.single();
+			}
 		}
 	});
 </script>

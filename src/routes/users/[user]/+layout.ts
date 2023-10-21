@@ -69,7 +69,7 @@ async function getUserProfile(userID: string, session: Session | null, supabase:
         }
     }
     else {
-        const response = await fetch(`https://api.spotify.com/users/${profile.spotify_id}`, {
+        const response = await fetch(`https://api.spotify.com/v1/users/${profile.spotify_id}`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${session?.provider_token}`
@@ -102,6 +102,7 @@ async function getUserProfile(userID: string, session: Session | null, supabase:
         isFollowing: is_following,
         ownerData,
     }
+
 
 
     return userProfile;

@@ -88,19 +88,21 @@ async function getUserProfile(userID: string, session: Session | null, supabase:
     const num_followers = followers !== null && !err1 ? followers[0].count : 0;
     const num_following = following !== null && !err2 ? following[0].count : 0;
     const is_following = isFollowing.length > 0 && !err3 ? true : false;
+    const bio = profile.bio ? profile.bio : "";
 
     const userProfile: UserProfile = {
         username: spotifyData.display_name,
         spotify_id: spotifyData.id,
         spotify_url: spotifyData.external_urls.spotify,
         display_name: spotifyData.display_name,
-        bio: profile.bio,
+        bio,
         profile_picture,
         followers: num_followers,
         following: num_following,
         isFollowing: is_following,
         ownerData,
     }
+
 
     return userProfile;
 }

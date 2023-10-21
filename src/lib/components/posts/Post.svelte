@@ -7,6 +7,7 @@
 	import type { PostData } from './helpers';
 
 	export let data: PostData;
+	export let enablePreload = true;
 
 	let commentsVisible = false;
 
@@ -63,17 +64,18 @@
 				{/if}
 				<div class="flex flex-col justify-start ml-6">
 					<a
+						data-sveltekit-preload-data={enablePreload ? 'hover' : 'off'}
 						class="text-surface-300 text-base xs:text-xl anchor font-semibold"
 						href={`/users/${data.username}`}>{data.username}</a
 					>
-					<div class="text-xs xs:text-base text-surface-400 italic">{data.date}</div>
-					<div class="text-xs xs:text-base text-surface-400 italic">{data.status}</div>
+					<div class="text-xs xs:text-sm text-surface-400 italic">{data.date}</div>
+					<div class="text-xs xs:text-sm text-surface-400 italic">{data.status}</div>
 				</div>
 			</div>
 			<TextDropdown
 				containerClass="mt-2 md:flex-grow flex items-start"
 				textClass="text-sm xs:text-base text-surface-300 md:text-sm"
-				expandedTextClass="md:overflow-y-scroll md:max-h-44"
+				expandedTextClass="md:overflow-y-scroll md:max-h-40"
 				expandIconClass="text-lg xs:text-xl text-surface-300"
 				hideIconClass="text-xl xs:text-2xl text-surface-300"
 			>
@@ -119,7 +121,7 @@
 	</div>
 	{#if commentsVisible}
 		{#if data.comments && data.comments.length > 0}
-			<CommentList data={data.comments} />
+			<CommentList data={data.comments} {enablePreload} />
 		{:else}
 			<p class="text-center text-2xl text-surface-300">No comments found</p>
 		{/if}

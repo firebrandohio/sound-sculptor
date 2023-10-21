@@ -22,7 +22,7 @@ export const createFakePost = (): PostData => ({
     },
     username: faker.internet.userName(),
     avatarURL: faker.internet.avatar(),
-    text: faker.lorem.paragraph(),
+    text: faker.lorem.paragraph(20),
     date: faker.date.past(),
     votes: faker.number.int({ min: -99, max: 999 }),
     comments: Array.from({ length: faker.number.int({ min: 1, max: 3 }) }, () => createFakeComment(faker.string.uuid(), faker.number.int({ min: 1, max: 3 }))),

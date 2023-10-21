@@ -6,7 +6,7 @@
 <div class="container h-full mx-auto flex justify-center items-center flex-col">
 	{#if data.posts}
 		{#each data.posts as post}
-			<Post data={post} />
+			<Post data={post} enablePreload={false} />
 		{/each}
 	{:else}
 		<p class="text-center text-2xl text-surface-300">No posts found</p>

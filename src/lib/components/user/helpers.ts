@@ -1,5 +1,6 @@
 export type UserProfile = {
     username: string,
+    id: string,
     spotify_id: string,
     spotify_url: string,
     display_name: string,

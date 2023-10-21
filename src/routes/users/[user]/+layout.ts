@@ -92,6 +92,7 @@ async function getUserProfile(userID: string, session: Session | null, supabase:
 
     const userProfile: UserProfile = {
         username: spotifyData.display_name,
+        id: profile.user_id,
         spotify_id: spotifyData.id,
         spotify_url: spotifyData.external_urls.spotify,
         display_name: spotifyData.display_name,

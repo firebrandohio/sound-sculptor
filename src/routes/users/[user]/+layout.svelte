@@ -3,6 +3,7 @@
 	import { AppBar, AppShell } from '@skeletonlabs/skeleton';
 	import { Modal, getModalStore } from '@skeletonlabs/skeleton';
 	import type { ModalSettings, ModalComponent, ModalStore } from '@skeletonlabs/skeleton';
+	import { followUser, unfollowUser } from '$lib/supabase/userInteraction.js';
 
 	import { writable, type Writable } from 'svelte/store';
 	import { onMount } from 'svelte';
@@ -71,6 +72,30 @@
 		//call modal
 		modalStore.trigger(newBioModal);
 	};
+
+	const toggleFollow = () => {
+		profile.isFollowing = !profile.isFollowing;
+	};
+
+	const follow = async () => {
+		if (session) {
+			const res = await followUser(session.user.id, profile.id, session, supabase);
+			if (res.err) alert(res.err);
+			else {
+				toggleFollow();
+			}
+		}
+	};
+
+	const unfollow = async () => {
+		if (session) {
+			const res = await unfollowUser(session.user.id, profile.id, session, supabase);
+			if (res.err) alert(res.err);
+			else {
+				toggleFollow();
+			}
+		}
+	};
 </script>
 
 <AppShell>
@@ -97,11 +122,19 @@
 					<div class="flex-col xs:flex-row h-full items-center m-2 xs:m-0 hidden xs:flex">
 						{#if !profile.ownerData}
 							{#if profile.isFollowing}
-								<button class="btn btn-sm text-sm variant-soft-surface italics xs:mr-2"
-									>Following</button
+								<button
+									class="btn btn-sm text-sm variant-soft-surface italics xs:mr-2"
+									on:click={async () => await unfollow()}
 								>
+									Following
+								</button>
 							{:else}
-								<button class="btb btn-sm text-sm variant-filled-tertiary xs:mr-2">Follow</button>
+								<button
+									class="btb btn-sm text-sm variant-filled-tertiary xs:mr-2"
+									on:click={async () => await follow()}
+								>
+									Follow
+								</button>
 							{/if}
 						{/if}
 

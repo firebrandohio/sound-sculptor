@@ -84,6 +84,6 @@
 	{:else if !$user}
 		<p>loading...</p>
 	{:else}
-		<div class="max-w-md">{$user.display_name}</div>
+		<div class="max-w-md">...Feed will go here...</div>
 	{/if}
 </div>

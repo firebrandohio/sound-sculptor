@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../app.postcss';
-	import { AppShell, AppBar, Modal } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, Modal, TabGroup, TabAnchor } from '@skeletonlabs/skeleton';
+	import { page } from '$app/stores';
 
 	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
@@ -156,6 +157,31 @@
 				{/if}
 			</svelte:fragment>
 		</AppBar>
+		{#if session}
+			<TabGroup
+				justify="justify-center"
+				active="variant-filled-primary"
+				hover="hover:variant-soft-primary"
+				flex="flex-none"
+				rounded=""
+				border=""
+				class="bg-surface-100-800-token"
+			>
+				<TabAnchor href="/" selected={$page.url.pathname === '/'}>
+					<span>Feed</span>
+				</TabAnchor>
+				<TabAnchor href="/users" selected={$page.url.pathname === '/users'}>
+					<span>Users</span>
+				</TabAnchor>
+				<TabAnchor href="/threads" selected={$page.url.pathname === '/threads'}>
+					<span>Threads</span>
+				</TabAnchor>
+				<TabAnchor href="/playlists" selected={$page.url.pathname === '/playlists'}>
+					<span>Playlists</span>
+				</TabAnchor>
+				<!-- ... -->
+			</TabGroup>
+		{/if}
 	</svelte:fragment>
 	<!-- Page Route Content -->
 

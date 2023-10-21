@@ -84,7 +84,7 @@ async function getUserProfile(userID: string, session: Session | null, supabase:
     }
 
     //format/validate data
-    const profile_picture = spotifyData.images.length > 0 ? spotifyData.images[0].url : null;
+    const profile_picture = (spotifyData.images && spotifyData.images.length > 0) ? spotifyData.images[0].url : null;
     const num_followers = followers !== null && !err1 ? followers[0].count : 0;
     const num_following = following !== null && !err2 ? following[0].count : 0;
     const is_following = isFollowing.length > 0 && !err3 ? true : false;
@@ -101,7 +101,6 @@ async function getUserProfile(userID: string, session: Session | null, supabase:
         isFollowing: is_following,
         ownerData,
     }
-    console.log(userProfile);
 
     return userProfile;
 }

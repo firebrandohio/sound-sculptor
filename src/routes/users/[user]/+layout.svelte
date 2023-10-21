@@ -1,7 +1,14 @@
 <script lang="ts">
-	import { faker } from '@faker-js/faker';
 	import Icon from '@iconify/svelte';
 	import { AppBar, AppShell } from '@skeletonlabs/skeleton';
+	import { Modal, getModalStore } from '@skeletonlabs/skeleton';
+	import type { ModalSettings, ModalComponent, ModalStore } from '@skeletonlabs/skeleton';
+	import EditBioModal from '$lib/components/user/EditBioModal.svelte';
+	import NewBioModal from '$lib/components/user/NewBioModal.svelte';
+	import { writable, type Writable } from 'svelte/store';
+	import { onMount } from 'svelte';
+
+	const modalStore = getModalStore();
 
 	export let data;
 	$: ({ supabase, session, profile } = data);
@@ -13,6 +20,66 @@
 	} else {
 		profileImage = `https://api.dicebear.com/7.x/shapes/svg?seed=${profile.display_name}`;
 	}
+	/*
+	//reactive system that only requires the modal to set the value of profileBio to trigger the update
+	//writable store for bio
+	const profileBio = writable<string>('');
+	profileBio.set(profile.bio); //profile bio listens to updates to profile.bio
+	const bio = writable<string>('');
+	bio.set(/$profileBio); //bio listens to updates to the value of profileBio
+	//profile.bio = /$profileBio; //profile.bio listens to updates to the value profileBio
+
+	const updateBio = async (profileBio: string) => {
+		//update bio in database
+		if (profile.ownerData) {
+			if (profile.bio !== profileBio) {
+				await supabase.from('Profile').update({ bio: profileBio }).eq('user_id', session?.user.id);
+			}
+		}
+	};
+
+	$: updateBio(/$profileBio); //update function listens to changes to the value of profileBio
+
+	onMount(() => {
+		//update profileBio on mount
+		profileBio.set(profile.bio);
+		bio.set(/$profileBio);
+	});
+
+	const newBioModalComponent: ModalComponent = {
+		ref: NewBioModal,
+		props: {
+			profileBio,
+			bio
+		}
+	};
+	const editBioModalComponent: ModalComponent = {
+		ref: EditBioModal,
+		props: {
+			profileBio,
+			bio
+		}
+	}; 
+
+	const newBioModal: ModalSettings = {
+		type: 'component',
+		component: newBioModalComponent
+	};
+
+	const editBioModal: ModalSettings = {
+		type: 'component',
+		component: editBioModalComponent
+	};
+
+	const editBio = async () => {
+		//call modal
+		modalStore.trigger(editBioModal);
+	};
+
+	const addBio = async () => {
+		//call modal
+		modalStore.trigger(newBioModal);
+	}; */
 </script>
 
 <AppShell>
@@ -55,14 +122,34 @@
 			</div>
 			<hr class="border-surface-700 my-2 mx-4" />
 			{#if profile.ownerData}
-				<div class="flex flex-row items-center justify-between w-full mx-4">
-					<button class=""
-						><Icon icon="mdi:gear-outline" class="text-3xl text-surface-500" /></button
-					>
-					<p class="text-sm sm:text-base text-surface-400 mx-4 text-center">
-						{profile.bio}
-					</p>
-				</div>
+				{#if profile.bio === ''}
+					<div class="flex flex-row items-center justify-center w-full mx-4">
+						<button
+							class="btn btn-sm variant-ghost-surface"
+							on:click={async () => {
+								/*await addBio*/
+							}}
+						>
+							<Icon icon="mdi:plus" class="text-xl mr-1 text-surface-500" />
+							Add Bio
+						</button>
+					</div>
+				{:else}
+					<div class="flex flex-row items-center w-full mx-4">
+						<button
+							class="btn btn-sm variant-ghost-surface"
+							on:click={async () => {
+								/*await editBio*/
+							}}
+						>
+							<Icon icon="mdi:gear-outline" class="text-xl text-surface-500 mr-1" />
+							Edit Bio
+						</button>
+						<p class="text-sm w-full sm:text-base text-surface-400 mx-4 text-center">
+							{profile.bio}
+						</p>
+					</div>
+				{/if}
 			{:else}
 				<p class="text-sm sm:text-base text-surface-400 mx-4 text-center">
 					{profile.bio}

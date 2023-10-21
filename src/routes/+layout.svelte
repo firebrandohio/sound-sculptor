@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.postcss';
-	import { AppShell, AppBar } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, Modal } from '@skeletonlabs/skeleton';
 
 	// Floating UI for Popups
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
@@ -11,6 +11,14 @@
 
 	import { onMount } from 'svelte';
 	import { user } from '$lib/stores/user';
+
+	import { initializeStores } from '@skeletonlabs/skeleton';
+
+	initializeStores();
+
+	import { getModalStore } from '@skeletonlabs/skeleton';
+
+	const modalStore = getModalStore();
 
 	export let data;
 	let { supabase, session } = data;
@@ -40,6 +48,8 @@
 		}
 	});
 </script>
+
+<Modal />
 
 <!-- App Shell -->
 <AppShell>

@@ -35,11 +35,12 @@ async function getUserProfile(userID: string, session: Session | null, supabase:
     }
 
     //get # of followers from database
-    const { data: followers, error: err1 } = await supabase.from("Following").select("*", { count: 'exact', head: true }).eq("following", userID);
+    const { count: followers, error: err1 } = await supabase.from("Following").select("*", { count: 'exact', head: false }).eq("following", userID);
     if (err1) throw error(500, { message: "Error getting # of followers" })
+    console.log(followers)
 
     //get # of following from database
-    const { data: following, error: err2 } = await supabase.from("Following").select("*", { count: 'exact', head: true }).eq("follower", userID);
+    const { count: following, error: err2 } = await supabase.from("Following").select("*", { count: 'exact', head: true }).eq("follower", userID);
     if (err2) throw error(500, { message: "Error getting # of following" })
     //check if user is following
     const { data: isFollowing, error: err3 } = await supabase.from("Following").select("*").eq("follower", session.user.id).eq("following", userID).limit(1);
@@ -85,8 +86,8 @@ async function getUserProfile(userID: string, session: Session | null, supabase:
 
     //format/validate data
     const profile_picture = (spotifyData.images && spotifyData.images.length > 0) ? spotifyData.images[0].url : null;
-    const num_followers = followers !== null && !err1 ? followers[0].count : 0;
-    const num_following = following !== null && !err2 ? following[0].count : 0;
+    const num_followers = followers !== null && !err1 ? followers : 0;
+    const num_following = following !== null && !err2 ? following : 0;
     const is_following = isFollowing.length > 0 && !err3 ? true : false;
     const bio = profile.bio ? profile.bio : "";
 

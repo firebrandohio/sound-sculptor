@@ -1,4 +1,4 @@
-// Import necessary database functions and models
+// Import necessary database functions and model
 import { Database } from '../DatabaseDefinitions'; // Update the import path to the actual file
 import { user, userBio, userProfileBio } from './lib/supabase/user'; // Update the import path
 

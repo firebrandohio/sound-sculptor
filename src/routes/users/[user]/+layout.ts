@@ -37,7 +37,7 @@ async function getUserProfile(userID: string, session: Session | null, supabase:
     //get # of followers from database
     const { count: followers, error: err1 } = await supabase.from("Following").select("*", { count: 'exact', head: false }).eq("following", userID);
     if (err1) throw error(500, { message: "Error getting # of followers" })
-    console.log(followers)
+
 
     //get # of following from database
     const { count: following, error: err2 } = await supabase.from("Following").select("*", { count: 'exact', head: true }).eq("follower", userID);

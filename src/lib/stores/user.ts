@@ -1,4 +1,4 @@
-
+/*
 import { Database } from '../DatabaseDefinitions'; // Update the import path
 import { user, userBio, userProfileBio } from './lib/supabase/user'; // Update the import path
 import { UserProfile, NewPostData } from './lib/components/user/helpers'; // Update the import path
@@ -90,3 +90,4 @@ export async function createPost(data: NewPostData) {
     return { err: 'Failed to create the post' };
   }
 }
+*/

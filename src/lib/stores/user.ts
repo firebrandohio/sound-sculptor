@@ -1,4 +1,10 @@
-// Import necessary database functions and models
+import { writable } from 'svelte/store';
+
+export const user = writable<any>(null);
+export const userBio = writable<string>("");
+export const userProfileBio = writable<string>("");
+
+/*// Import necessary database functions and models
 import { Database } from '../DatabaseDefinitions'; // Update the import path to the actual file
 import { user, userBio, userProfileBio } from './lib/supabase/user'; // Update the import path
 
@@ -56,4 +62,6 @@ export async function unfollow(follower: string, following: string) {
     console.error(error);
     return { err: 'Could not unfollow' };
   }
-}
+}*/
+
+

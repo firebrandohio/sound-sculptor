@@ -34,7 +34,7 @@
 			<span class="text-xs text-surface-300"
 				>{user.followers} {user.followers !== 1 ? 'followers' : 'follower'}</span
 			>
-			<span class="text-xs text-surface-300">{user.followers} following</span>
+			<span class="text-xs text-surface-300">{user.following} following</span>
 			{#if user.isFollowing}
 				<span class="text-xs text-surface-400 italics">you are following</span>
 			{/if}

@@ -1,14 +1,17 @@
-import { type } from "os";
+
+
+export type PostPlaylistData = {
+    playlistID: string,
+    playlistURL: string,
+    playlistRank: number,
+    playlistTitle: string,
+    userRank: 0 | 1 | 2 | 3 | 4 | 5,
+    isSubscribed: boolean
+};
+
 
 export type PostData = {
-    playlistData: {
-        playlistID: string,
-        playlistURL: string,
-        playlistRank: number,
-        playlistTitle: string,
-        userRank: 0 | 1 | 2 | 3 | 4 | 5,
-        isSubscribed: boolean
-    },
+    playlistData: PostPlaylistData,
     username: string,
     avatarURL: string | null,
     text: string,
@@ -33,8 +36,10 @@ export type CommentData = {
 
 export type NewPostData = {
     userID: string,
-    playlistID: string,
+    playlistID: string | null,
+    threadSlug: string | null,
     text: string,
+
 };
 
 export type NewCommentData = {
@@ -60,4 +65,10 @@ export type EditCommentData = {
     userID: string,
     commentID: string,
     text: string
+};
+
+export type PostPlaylistBasicData = {
+    id: string,
+    title: string,
+    duration: number,
 };

@@ -3,6 +3,7 @@
 	import type { Session } from '@supabase/supabase-js';
 	import { user } from '$lib/stores/user';
 	import { onMount } from 'svelte';
+	import MainFeed from '$lib/components/user/MainFeed.svelte';
 
 	export let data;
 
@@ -84,6 +85,6 @@
 	{:else if !$user}
 		<p>loading...</p>
 	{:else}
-		<div class="max-w-md">...Feed will go here...</div>
+		<MainFeed data={{ session, supabase }} />
 	{/if}
 </div>

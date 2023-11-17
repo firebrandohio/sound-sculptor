@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.postcss';
-	import { AppShell, AppBar, Modal, TabGroup, TabAnchor } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, Modal, TabGroup, TabAnchor, Toast } from '@skeletonlabs/skeleton';
 	import { page } from '$app/stores';
 
 	// Floating UI for Popups
@@ -112,6 +112,7 @@
 </script>
 
 <Modal />
+<Toast />
 
 <!-- App Shell -->
 <AppShell>

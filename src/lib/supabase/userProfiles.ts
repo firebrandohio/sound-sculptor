@@ -18,6 +18,10 @@ export type SearchRange = {
 //SERVER FUNCTIONS
 //---------------------------------------------------------------------------------------------
 export const getUsers = async (filter: UserSearchFilter | null, range: SearchRange, session: Session, supabase: SupabaseClient) => {
+    //check active session
+    if (!session) return { err: "No active session" };
+
+
     //get profile data from database based on filter
     if (filter === null) {
         filter = {
@@ -25,6 +29,8 @@ export const getUsers = async (filter: UserSearchFilter | null, range: SearchRan
             currentUserIsFollowedBy: null,
         };
     }
+
+
 
     //TODO: remove this when the filter is implemented
     if (filter.currentUserIsFollowing === false) filter.currentUserIsFollowing = null;

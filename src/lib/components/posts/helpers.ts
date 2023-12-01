@@ -11,12 +11,13 @@ export type PostPlaylistData = {
 
 
 export type PostData = {
-    playlistData: PostPlaylistData,
+    playlistData: PostPlaylistData | null,
     username: string,
     avatarURL: string | null,
     text: string,
     date: Date,
     votes: number,
+    totalComments: number,
     comments: Array<CommentData> | null,
     id: string,
     rank: number,
@@ -72,3 +73,73 @@ export type PostPlaylistBasicData = {
     title: string,
     duration: number,
 };
+
+export type PostMetadata = {
+    thread: string | null,
+    sharedByID: string | null,
+    sharedByUsername: string | null,
+    sharedByAvatar: string | null,
+    sharedOn: Date | null,
+};
+
+export type PostQuery = {
+    userID: string | null,
+    thread: string | null,
+    mainFeedFor: string | null | undefined,
+    maxPosts: number | null,
+    range: {
+        start: number,
+        end: number
+    } | null,
+}
+
+
+//format post data for display
+//takes in an object with the following properties:
+// {
+//     id: string,
+//     owner: string,
+//     playlist: string | null,
+//     thread: string | null,
+//     text: string,
+//     created_at: Date,
+//     last_edited: Date | null,
+//     votes: number,
+//     userVote: -1 | 0 | 1,
+//     comments: number,
+// }
+//and returns an object of type PostData
+
+export function formatPost(post: any): PostData {
+
+    const playlistData = null;
+    const username = post.username;
+    const avatarURL = post.avatar;
+    const text = post.text;
+    const date = post.created_at;
+    const votes = post.votes;
+    const totalComments = post.comments;
+    const comments = null;
+    const id = post.id;
+    const rank = post.rank;
+    const status = post.status;
+    const userVote = post.userVote;
+
+
+    let formattedPost = {
+        playlistData,
+        username,
+        avatarURL,
+        text,
+        date,
+        votes,
+        totalComments,
+        comments,
+        id,
+        rank,
+        status,
+        userVote
+    };
+
+    return formattedPost;
+}

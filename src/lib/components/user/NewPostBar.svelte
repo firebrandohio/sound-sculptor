@@ -6,6 +6,7 @@
 	import type { Session } from '@supabase/supabase-js';
 	import { goto } from '$app/navigation';
 	import { createPost } from '$lib/supabase/posts';
+	import { th } from '@faker-js/faker';
 
 	export let data: { supabase: any; session: Session | null };
 
@@ -42,10 +43,13 @@
 			return;
 		}
 
+		//allows component to save last thread slug, but still post to personal
+		const threadSlug = postTo === '2' ? (thread?.slug ? thread.slug : null) : null;
+
 		const newPostData: NewPostData = {
 			userID: data.session?.user.id,
 			playlistID: playlistData?.id ? playlistData.id : null,
-			threadSlug: thread?.slug ? thread.slug : null,
+			threadSlug: threadSlug,
 			text: postContent
 		};
 
@@ -85,7 +89,7 @@
 			{#if postTo === '2'}
 				{#if thread}
 					<p class="text-surface-300 mr-3">
-						Posting to <span class="underline">{thread.title}</span>
+						Posting to <span class="underline">/{thread.title}</span>
 					</p>
 					<button class="btn btn-sm variant-soft-error mx-3" on:click={toggleThread}
 						>Remove thread</button

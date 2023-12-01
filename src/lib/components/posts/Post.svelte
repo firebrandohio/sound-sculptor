@@ -47,7 +47,7 @@
 </script>
 
 <div
-	class="flex flex-col w-full justify-center max-w-md md:max-w-3xl card p-2 xs:p-3 mx-4 my-8 variant-soft-secondary"
+	class="flex flex-col w-full justify-center max-w-md md:max-w-3xl card p-2 xs:p-3 mx-4 variant-soft-secondary"
 >
 	<div class="flex md:flex-row flex-col">
 		<PlaylistBlock data={data.playlistData} />
@@ -111,7 +111,7 @@
 				</div>
 				<button
 					class="btn btn-sm xs:btn-lg variant-filled-primary text-sm xs:text-lg font-semibold"
-					on:click={toggleComments}>{`${data.comments?.length} Comments`}</button
+					on:click={toggleComments}>{`${data.totalComments} Comments`}</button
 				>
 				<button class="btn btn-sm xs:btn-lg variant-filled-surface text-sm xs:text-lg font-semibold"
 					>Share</button

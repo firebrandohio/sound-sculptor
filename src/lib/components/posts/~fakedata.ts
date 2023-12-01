@@ -25,6 +25,7 @@ export const createFakePost = (): PostData => ({
     text: faker.lorem.paragraph(20),
     date: faker.date.past(),
     votes: faker.number.int({ min: -99, max: 999 }),
+    totalComments: faker.number.int({ min: 0, max: 999 }),
     comments: Array.from({ length: faker.number.int({ min: 1, max: 3 }) }, () => createFakeComment(faker.string.uuid(), faker.number.int({ min: 1, max: 3 }))),
     id: faker.string.uuid(),
     rank: faker.number.int({ min: 1, max: 100 }),

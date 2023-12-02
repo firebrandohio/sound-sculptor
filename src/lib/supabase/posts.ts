@@ -3,7 +3,7 @@ import { formatPost } from '../components/posts/helpers';
 import type { Session } from '@supabase/supabase-js'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
-//Create New Post
+//Create      New Post
 export async function createPost(postData: NewPostData, session: Session | null, supabase: any) {
     if (!session) return { err: "No active session" };
 

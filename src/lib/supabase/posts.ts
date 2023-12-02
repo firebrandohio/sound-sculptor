@@ -176,7 +176,98 @@ export async function getUserVotes(session: Session | null, supabase: any) {
 // if range is not specified, it will default to 0-10
 // if userID is not specified, it will default to the current user
 // if userID is specified, it will return all posts by that user
+export async function getPostComments(postID: string, supabase: any): Promise<CommentData[]> {
+    // Fetch comments for the specified postID
+    const { data: comments, error } = await supabase
+        .from('Comments')
+        .select('id, parent_id, text, created_at')
+        .eq('post_id', postID)
+        .order('created_at', { ascending: true }); // Sort comments by the order they were posted
 
+    if (error) {
+        console.error('Error fetching comments:', error.message);
+        return [];
+    }
+
+    const commentData: CommentData[] = [];
+
+    // Create a map to store comments by their ID for easy reference
+    const commentMap: Record<string, CommentData> = {};
+
+    comments.forEach((comment: any) => {
+        // Create a CommentData object
+        const commentObj: CommentData = {
+            id: comment.id,
+            text: comment.text,
+            created_at: comment.created_at,
+            children: [],
+            username: '',
+            userId: '',
+            avatarURL: null,
+            date: new Date(),
+        };
+
+        commentMap[comment.id] = commentObj;
+
+        if (comment.parent_id && commentMap[comment.parent_id]) {
+            // If the comment has a parent, add it as a child to the parent comment
+            commentMap[comment.parent_id].children.push(commentObj);
+        } else {
+            // If the comment has no parent, it's a root comment, so add it to the main array
+            commentData.push(commentObj);
+        }
+    });
+
+    return commentData;
+}
+
+    
+export async function createComment(commentData: NewCommentData, session: Session | null, supabase: any) {
+    if (!session) return { err: "No active session" };
+
+    // Check if the required parameters for creating a comment are available
+    if (!commentData.text || !commentData.postID) {
+        return { err: "Missing required parameters for creating a comment" };
+    }
+
+    // Check if the post for the comment exists
+    const post = await supabase
+        .from('Posts')
+        .select('owner')
+        .eq('id', commentData.postID)
+        .single();
+    if (post.error || !post) return { err: "Post does not exist" };
+
+    // Check if user matches session
+    if (session.user.id !== post.owner) {
+        return { err: "User does not have permission to comment on this post" };
+    }
+
+    // Create the comment
+    const { data: comment, error } = await supabase
+        .from('Comments')
+        .insert({
+            post_id: commentData.postID,
+            text: commentData.text,
+            parent_id: commentData.parent
+        })
+        
+        .single();
+    if (error) return { err: error.message };
+
+    // Create new comment meta record
+    const { error: error2 } = await supabase
+        .from('CommentMeta')
+        .insert({
+            comment: comment.id,
+            likes: 0,
+            replies: 0,
+        });
+
+    if (error2) return { err: error2.message };
+
+    return { success: true };
+}
 
 
 export async function getUserPosts(userID: string | null, range: { start: number, end: number } | null, session: Session | null, supabase: any) {

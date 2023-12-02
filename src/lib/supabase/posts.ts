@@ -327,3 +327,28 @@ export async function getUserPosts(userID: string | null, range: { start: number
 
 
 }
+
+
+export async function EditCommentData(commentData: string, message: string, session: Session | null, supabase: any) {
+    if (!session) return { err: "No active session"};
+
+    //check if comment exists
+    const comment = await supabase
+        .from('Comment')
+        .select('owner')
+        .eq('id', commentData)
+        .single();
+    if (comment.error || !comment) return { err: "Comment does not exist"};
+
+    //check if user matches session
+    if (comment.owner !== session.user.id) return { err: "User does not match session" };
+
+    //edit comment
+    const { error } = await supabase
+        .from('Comments')
+        .update({text: message})
+        .eq('id', commentData);
+    if (error) return { err: error.message};
+
+    return { success: true };
+}

@@ -3,7 +3,7 @@ import { formatPost } from '../components/posts/helpers';
 import type { Session } from '@supabase/supabase-js'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
-//Create      New Post
+//Create  New Post
 export async function createPost(postData: NewPostData, session: Session | null, supabase: any) {
     if (!session) return { err: "No active session" };
 
@@ -176,9 +176,6 @@ export async function getUserVotes(session: Session | null, supabase: any) {
 // if range is not specified, it will default to 0-10
 // if userID is not specified, it will default to the current user
 // if userID is specified, it will return all posts by that user
-
-
-
 export async function getUserPosts(userID: string | null, range: { start: number, end: number } | null, session: Session | null, supabase: any) {
     const formattedPosts: Array<PostData> = [];
     if (!session) return { posts: formattedPosts, err: "No active session" };
@@ -198,13 +195,7 @@ export async function getUserPosts(userID: string | null, range: { start: number
         .range(range.start, range.end)
         .order('date_posted', { ascending: false });
 
-
-
-
     if (error) return { posts: formattedPosts, err: error.message, };
-
-
-
 
     for (let i = 0; i < data.length; i++) {
         //get metadata for each post
@@ -253,13 +244,8 @@ export async function getUserPosts(userID: string | null, range: { start: number
 
         //format posts
         formattedPosts.push(formatPost(data[i]));
-
     }
-
-
-
-
-
+    return { posts: formattedPosts, err: null };
 }
 
 

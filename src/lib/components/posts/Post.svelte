@@ -5,6 +5,7 @@
 
 	import CommentList from './CommentList.svelte';
 	import type { PostData } from './helpers';
+	import PlaceholderPlaylistBlock from './PlaceholderPlaylistBlock.svelte';
 
 	export let data: PostData;
 	export let enablePreload = true;
@@ -47,41 +48,51 @@
 </script>
 
 <div
-	class="flex flex-col w-full justify-center max-w-md md:max-w-3xl card p-2 xs:p-3 mx-4 variant-soft-secondary"
+	class="flex flex-col w-full justify-center max-w-md md:max-w-3xl card p-2 xs:p-3 variant-soft-secondary"
+	id={data.id}
 >
 	<div class="flex md:flex-row flex-col">
-		<PlaylistBlock data={data.playlistData} />
-		<div class="flex flex-col w-full md:max-w-md md:ml-6 md:h-full">
-			<div class="my-2 flex flex-row items-center">
-				{#if data.avatarURL === ''}
-					<img
-						class="w-16 xs:w-20 aspect-square"
-						src={`https://api.dicebear.com/7.x/shapes/svg?seed=${data.username}`}
-						alt="avatar"
-					/>
-				{:else}
-					<img class="w-16 xs:w-20 aspect-square" src={data.avatarURL} alt="avatar" />
-				{/if}
-				<div class="flex flex-col justify-start ml-6">
-					<a
-						data-sveltekit-preload-data={enablePreload ? 'hover' : 'off'}
-						class="text-surface-300 text-base xs:text-xl anchor font-semibold"
-						href={`/users/${data.username}`}>{data.username}</a
-					>
-					<div class="text-xs xs:text-sm text-surface-400 italic">{data.date}</div>
-					<div class="text-xs xs:text-sm text-surface-400 italic">{data.status}</div>
+		{#if data.playlistData}
+			<PlaylistBlock data={data.playlistData} />
+		{:else}
+			<PlaceholderPlaylistBlock />
+		{/if}
+		<div class="flex flex-col w-full md:max-w-md md:ml-6">
+			<div>
+				<div class="my-2 flex flex-row items-center">
+					{#if data.avatarURL === '' || data.avatarURL === null}
+						<img
+							class="w-16 xs:w-20 aspect-square"
+							src={`https://api.dicebear.com/7.x/shapes/svg?seed=${data.username}`}
+							alt="avatar"
+						/>
+					{:else}
+						<img
+							class="w-16 xs:w-20 aspect-square object-cover"
+							src={data.avatarURL}
+							alt="avatar"
+						/>
+					{/if}
+					<div class="flex flex-col justify-start ml-6">
+						<a
+							data-sveltekit-preload-data={enablePreload ? 'hover' : 'off'}
+							class="text-surface-300 text-base xs:text-xl anchor font-semibold"
+							href={`/users/${data.userID}`}>{data.username}</a
+						>
+						<div class="text-xs xs:text-sm text-surface-400 italic">{data.date}</div>
+						<div class="text-xs xs:text-sm text-surface-400 italic">{data.status}</div>
+					</div>
 				</div>
+				<TextDropdown
+					containerClass="mt-2 md:flex-grow flex items-start md:h-44 w-full"
+					textClass="text-sm xs:text-base text-surface-300 md:text-sm"
+					expandedTextClass="md:overflow-y-scroll md:max-h-40"
+					expandIconClass="text-lg xs:text-xl text-surface-300"
+					hideIconClass="text-xl xs:text-2xl text-surface-300"
+				>
+					{data.text}
+				</TextDropdown>
 			</div>
-			<TextDropdown
-				containerClass="mt-2 md:flex-grow flex items-start"
-				textClass="text-sm xs:text-base text-surface-300 md:text-sm"
-				expandedTextClass="md:overflow-y-scroll md:max-h-40"
-				expandIconClass="text-lg xs:text-xl text-surface-300"
-				hideIconClass="text-xl xs:text-2xl text-surface-300"
-			>
-				{data.text}
-			</TextDropdown>
-
 			<div class="flex flex-row justify-between items-center mt-4">
 				<div class="flex flex-row items-center">
 					<div class="flex flex-col">

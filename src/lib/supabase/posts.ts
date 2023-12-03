@@ -176,11 +176,9 @@ export async function getUserVotes(session: Session | null, supabase: any) {
 // if range is not specified, it will default to 0-10
 // if userID is not specified, it will default to the current user
 // if userID is specified, it will return all posts by that user
-
-
-
 export async function getUserPosts(userID: string | null, range: { start: number, end: number } | null, session: Session | null, supabase: any) {
-    if (!session) return { err: "No active session" };
+    const formattedPosts: Array<PostData> = [];
+    if (!session) return { posts: formattedPosts, err: "No active session" };
 
     //set default range
     if (!range) range = { start: 0, end: 10 };
@@ -188,17 +186,21 @@ export async function getUserPosts(userID: string | null, range: { start: number
     //set default userID
     if (!userID) userID = session.user.id;
 
+
     //get posts
     const { data, error } = await supabase
-        .from('Posts')
-        .select('id, playlist, thread, text, created_at')
+        .from("Posts")
+        .select('*')
         .eq('owner', userID)
         .range(range.start, range.end)
-        .order('created_at', { ascending: false });
+        .order('date_posted', { ascending: false });
 
-    if (error) return { err: error.message };
 
-    const formattedPosts: Array<PostData> = [];
+
+
+    if (error) return { posts: formattedPosts, err: error.message, };
+
+
 
 
     for (let i = 0; i < data.length; i++) {
@@ -217,14 +219,34 @@ export async function getUserPosts(userID: string | null, range: { start: number
 
         //get current user's vote
         const { data: vote, error: err2 } = await supabase
-            .from('Votes')
+            .from("Votes")
             .select('value')
             .eq('post', data[i].id)
-            .eq('user', session.user.id)
+            .eq('user_id', session.user.id)
             .single();
 
         if (err2) data[i].userVote = 0;
         else data[i].userVote = vote.value;
+
+        //get username and avatar
+        const { data: user, error: err3 } = await supabase
+            .from("Profile")
+            .select('username, spotify_id')
+            .eq('user_id', data[i].owner)
+            .single();
+
+        if (err3) return { posts: [], err: err3.message };
+        data[i].username = user.username;
+
+        //get avatar from spotify
+        const spotifyData = await (await fetch(`https://api.spotify.com/v1/users/${user.spotify_id}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${session?.provider_token}`
+            }
+        })).json();
+        data[i].avatar = (spotifyData.images && spotifyData.images.length > 0) ? spotifyData.images[0].url : null;
+
 
         //format posts
         formattedPosts.push(formatPost(data[i]));
@@ -233,6 +255,6 @@ export async function getUserPosts(userID: string | null, range: { start: number
 
 
 
-
+    return { posts: formattedPosts, err: null };
 
 }

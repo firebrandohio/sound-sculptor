@@ -1,9 +1,11 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import { Ratings } from '@skeletonlabs/skeleton';
+	import type { PostPlaylistData } from './helpers';
 
-	export let data = {
+	export let data: PostPlaylistData = {
 		playlistURL: '',
+		playlistID: '',
 		playlistRank: 0,
 		playlistTitle: '',
 		userRank: 0,
@@ -15,7 +17,7 @@
 		play = !play;
 	};
 
-	function iconClick(event: CustomEvent<{ index: number }>): void {
+	function iconClick(event: CustomEvent<{ index: 0 | 1 | 2 | 3 | 4 | 5 }>): void {
 		data.userRank = event.detail.index;
 	}
 </script>

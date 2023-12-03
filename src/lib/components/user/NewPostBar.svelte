@@ -6,7 +6,6 @@
 	import type { Session } from '@supabase/supabase-js';
 	import { goto } from '$app/navigation';
 	import { createPost } from '$lib/supabase/posts';
-	import { th } from '@faker-js/faker';
 
 	export let data: { supabase: any; session: Session | null };
 

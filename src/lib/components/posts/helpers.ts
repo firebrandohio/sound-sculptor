@@ -1,4 +1,4 @@
-
+import { getUserPosts } from "../../supabase/posts";
 
 export type PostPlaylistData = {
     playlistID: string,
@@ -13,6 +13,7 @@ export type PostPlaylistData = {
 export type PostData = {
     playlistData: PostPlaylistData | null,
     username: string,
+    userID: string,
     avatarURL: string | null,
     text: string,
     date: Date,
@@ -116,7 +117,7 @@ export function formatPost(post: any): PostData {
     const username = post.username;
     const avatarURL = post.avatar;
     const text = post.text;
-    const date = post.created_at;
+    const date = post.date_posted;
     const votes = post.votes;
     const totalComments = post.comments;
     const comments = null;
@@ -129,6 +130,7 @@ export function formatPost(post: any): PostData {
     let formattedPost = {
         playlistData,
         username,
+        userID: post.owner,
         avatarURL,
         text,
         date,
@@ -142,4 +144,23 @@ export function formatPost(post: any): PostData {
     };
 
     return formattedPost;
+}
+
+//handle various post querries and request posts from supabase
+export async function requestPosts(query: PostQuery, session: any, supabase: any) {
+    //set default range
+
+
+    if (!query.range) query.range = { start: 0, end: 10 };
+
+    //if a user id is provided, get posts for that user
+    if (query.userID) {
+
+        return await getUserPosts(query.userID, query.range, session, supabase);
+
+    }
+
+    //get posts
+    return null;
+
 }

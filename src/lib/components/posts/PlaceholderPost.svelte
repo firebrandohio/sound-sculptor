@@ -3,7 +3,7 @@
 </script>
 
 <div
-	class="flex flex-col w-full justify-center max-w-md md:max-w-3xl card p-2 xs:p-3 mx-4 variant-soft-secondary"
+	class="flex flex-col w-full justify-center max-w-md md:max-w-3xl card p-2 xs:p-3 variant-soft-secondary"
 >
 	<div class="flex md:flex-row flex-col">
 		<PlaceholderPlaylistBlock />
@@ -17,7 +17,7 @@
 					<div class="STATUS placeholder animate-pulse w-40 h-3 my-1" />
 				</div>
 			</div>
-			<div class="ml-3 flex flex-col items-start">
+			<div class="ml-3 flex flex-col items-start mb-20">
 				<div class="placeholder animate-pulse w-full h-3 my-1" />
 				<div class="placeholder animate-pulse w-full h-3 my-1" />
 				<div class="placeholder animate-pulse w-full h-3 my-1" />
@@ -25,7 +25,7 @@
 				<div class="placeholder animate-pulse w-48 h-3 my-1" />
 			</div>
 
-			<div class="flex flex-row justify-between items-center mt-4">
+			<div class="flex flex-row justify-between items-center mt-8">
 				<div class="flex flex-row items-center">
 					<div class="flex flex-col">
 						<div class="VOTE placeholder animate-pulse w-10 h-16" />

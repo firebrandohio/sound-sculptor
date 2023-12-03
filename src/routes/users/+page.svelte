@@ -1,7 +1,8 @@
 <script lang="ts">
 	import UserSearchList from '$lib/components/user/UserSearchList.svelte';
 	export let data;
-	const { supabase, session } = data;
+	$: ({ supabase, session } = data);
+	//export let profile;
 </script>
 
 <div class="flex flex-col justify-center items-center w-full">

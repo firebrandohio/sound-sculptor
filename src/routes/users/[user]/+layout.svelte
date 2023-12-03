@@ -186,6 +186,6 @@
 		</div>
 	</svelte:fragment>
 	<div class="min-h-screen">
-		<slot />
+		<slot {profile} />
 	</div>
 </AppShell>

@@ -3,7 +3,7 @@ import { formatPost } from '../components/posts/helpers';
 import type { Session } from '@supabase/supabase-js'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
-//Create New Post
+//Create      New Post
 export async function createPost(postData: NewPostData, session: Session | null, supabase: any) {
     if (!session) return { err: "No active session" };
 
@@ -176,6 +176,9 @@ export async function getUserVotes(session: Session | null, supabase: any) {
 // if range is not specified, it will default to 0-10
 // if userID is not specified, it will default to the current user
 // if userID is specified, it will return all posts by that user
+
+
+
 export async function getUserPosts(userID: string | null, range: { start: number, end: number } | null, session: Session | null, supabase: any) {
     const formattedPosts: Array<PostData> = [];
     if (!session) return { posts: formattedPosts, err: "No active session" };
@@ -255,6 +258,31 @@ export async function getUserPosts(userID: string | null, range: { start: number
 
 
 
-    return { posts: formattedPosts, err: null };
 
+
+}
+
+
+export async function EditCommentData(commentData: string, message: string, session: Session | null, supabase: any) {
+    if (!session) return { err: "No active session" };
+
+    //check if comment exists
+    const comment = await supabase
+        .from('Comment')
+        .select('owner')
+        .eq('id', commentData)
+        .single();
+    if (comment.error || !comment) return { err: "Comment does not exist" };
+
+    //check if user matches session
+    if (comment.owner !== session.user.id) return { err: "User does not match session" };
+
+    //edit comment
+    const { error } = await supabase
+        .from('Comments')
+        .update({ text: message })
+        .eq('id', commentData);
+    if (error) return { err: error.message };
+
+    return { success: true };
 }

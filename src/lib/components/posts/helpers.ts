@@ -149,17 +149,12 @@ export function formatPost(post: any): PostData {
 //handle various post querries and request posts from supabase
 export async function requestPosts(query: PostQuery, session: any, supabase: any) {
     //set default range
-
-
     if (!query.range) query.range = { start: 0, end: 10 };
 
     //if a user id is provided, get posts for that user
     if (query.userID) {
-
         return await getUserPosts(query.userID, query.range, session, supabase);
-
     }
-
     //get posts
     return null;
 

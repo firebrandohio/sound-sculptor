@@ -2,6 +2,8 @@ import type { PostData, NewPostData, NewCommentData, NewVoteData, EditPostData, 
 import { formatPost } from '../components/posts/helpers';
 import type { Session } from '@supabase/supabase-js'
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { checkFollowing } from './userInteraction';
+
 
 //Create  New Post
 export async function createPost(postData: NewPostData, session: Session | null, supabase: any) {
@@ -73,7 +75,7 @@ export async function deletePost(postID: string, session: Session | null, supaba
     if (post.error || !post) return { err: "Post does not exist" };
 
     //check if user matches session
-    if (post.owner !== session.user.id) return { err: "User does not match session" };
+    if (post.data.owner !== session.user.id) return { err: "User does not match session" };
 
     //delete post
     const { error } = await supabase
@@ -98,7 +100,7 @@ export async function editPostText(postID: string, message: string, session: Ses
     if (post.error || !post) return { err: "Post does not exist" };
 
     //check if user matches session
-    if (post.owner !== session.user.id) return { err: "User does not match session" };
+    if (post.data.owner !== session.user.id) return { err: "User does not match session" };
 
     //edit post
     const { error } = await supabase
@@ -115,45 +117,66 @@ export async function voteOnPost(postID: string, vote: -1 | 0 | 1, session: Sess
     if (!session) return { err: "No active session" };
 
     //check if post exists
-    const post = await supabase
+
+    const { owner, id, postErr } = await supabase
         .from('Posts')
-        .select('owner')
+        .select('owner', 'id')
         .eq('id', postID)
         .single();
-    if (post.error || !post) return { err: "Post does not exist" };
+    console.log(owner)
+    if (postErr || !owner) return { err: postErr };
 
-    //check if user matches session
-    if (post.owner === session.user.id) return { err: "User cannot vote on own post" };
+
 
     //check if user has already voted on post
     const { prevVote, err } = await supabase
         .from('Votes')
-        .select()
-        .eq('user', session.user.id)
-        .eq('post', postID)
-        .single();
+        .select('id', 'value')
+        .eq('user_id', session.user.id)
+
+
+    console.log(prevVote[0].value)
+
+    if (err) return { err: err.message };
 
     //if user has already voted, update vote
     if (prevVote) {
-        const { error } = await supabase
+        const { error1 } = await supabase
             .from('Votes')
             .update({ value: vote })
             .eq('id', prevVote.id);
-        if (error) return { err: error.message };
+        if (error1) return { err: error1.message };
+
+
     }
     //if user has not voted, create vote
     else {
-        const { error } = await supabase
+        const { error2 } = await supabase
             .from('Votes')
             .insert(
                 {
-                    user: session.user.id,
+                    user_id: session.user.id,
                     post: postID,
                     value: vote,
                 },
             );
-        if (error) return { err: error.message };
+        if (error2) return { err: error2.message };
     }
+    //update post meta
+    //get current votes
+    const { data, error3 } = await supabase
+        .from('PostMeta')
+        .select('votes')
+        .eq('post', postID)
+        .single();
+    if (error3) return { err: error3.message };
+    const votes = data.votes + vote;
+    //update votes
+    const { error4 } = await supabase
+        .from('PostMeta')
+        .update({ votes })
+        .eq('post', postID);
+    if (error4) return { err: error4.message };
     return { success: true };
 }
 
@@ -163,8 +186,8 @@ export async function getUserVotes(session: Session | null, supabase: any) {
 
     const { data, error } = await supabase
         .from('Votes')
-        .select('post, value')
-        .eq('user', session.user.id);
+        .select('value')
+        .eq('user_id', session.user.id);
     if (error) return { userVote: 0 };
 
     return { userVote: data.value };
@@ -212,15 +235,8 @@ export async function getUserPosts(userID: string | null, range: { start: number
         data[i].comments = meta.comments;
 
         //get current user's vote
-        const { data: vote, error: err2 } = await supabase
-            .from("Votes")
-            .select('value')
-            .eq('post', data[i].id)
-            .eq('user_id', session.user.id)
-            .single();
-
-        if (err2) data[i].userVote = 0;
-        else data[i].userVote = vote.value;
+        const { userVote } = await getUserVotes(session, supabase);
+        data[i].userVote = userVote;
 
         //get username and avatar
         const { data: user, error: err3 } = await supabase
@@ -242,8 +258,12 @@ export async function getUserPosts(userID: string | null, range: { start: number
         data[i].avatar = (spotifyData.images && spotifyData.images.length > 0) ? spotifyData.images[0].url : null;
 
 
+        //get status
+        data[i].status = (await getStatus(data[i].owner, session, supabase)).status;
+
         //format posts
         formattedPosts.push(formatPost(data[i]));
+
     }
     return { posts: formattedPosts, err: null };
 }
@@ -271,4 +291,18 @@ export async function EditCommentData(commentData: string, message: string, sess
     if (error) return { err: error.message };
 
     return { success: true };
+}
+
+//get status
+export async function getStatus(owner: string, session: Session | null, supabase: any) {
+    if (!session) return { err: "No active session" };
+    const following = await checkFollowing(session.user.id, owner, supabase);
+    const followed = await checkFollowing(owner, session.user.id, supabase);
+
+    if (following.err || followed.err) return { status: "" };
+
+    if (following.following && followed.following) return { status: "You follow each other" };
+    if (following.following) return { status: "you are following" };
+    if (followed.following) return { status: "following you" };
+    return { status: "" };
 }

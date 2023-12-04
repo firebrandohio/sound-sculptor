@@ -59,7 +59,23 @@ export const unfollowUser = async (follower: string, following: string, session:
     return { message: "user now unfollowing" }
 };
 
+//check following status
+//returns true if follower is following following
+export const checkFollowing = async (follower: string, following: string, supabase: SupabaseClient) => {
+    //validate input
+    if ((follower === null || following === null) && follower === following) {
+        return { err: "invalid input" };
+    }
 
+    //check if user is already following
+    const { data: isFollowing, error: err } = await supabase.from("Following").select("*").eq("follower", follower).eq("following", following).limit(1);
+    if (err) return { err: "error checking if following" };
+
+    //if user is not following, return
+    if (isFollowing.length === 0) return { following: false };
+
+    return { following: true }
+};
 
 //DATABASE FUNCTIONS
 //---------------------------------------------------------------------------------------------

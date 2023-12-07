@@ -4,6 +4,8 @@
 	import { user } from '$lib/stores/user';
 	import { onMount } from 'svelte';
 	import MainFeed from '$lib/components/user/MainFeed.svelte';
+	import PostFeed from '$lib/components/user/PostFeed.svelte';
+	import NewPostBar from '$lib/components/user/NewPostBar.svelte';
 
 	export let data;
 
@@ -85,6 +87,19 @@
 	{:else if !$user}
 		<p>loading...</p>
 	{:else}
-		<MainFeed data={{ session, supabase }} />
+		<div class="flex flex-col justify-start pt-4 w-full items-center md:max-w-3xl">
+			<NewPostBar data={{ supabase, session }} />
+		</div>
+		<PostFeed
+			query={{
+				userID: null,
+				thread: null,
+				mainFeedFor: data.session?.user.id,
+				maxPosts: 20,
+				range: null
+			}}
+			{session}
+			{supabase}
+		/>
 	{/if}
 </div>

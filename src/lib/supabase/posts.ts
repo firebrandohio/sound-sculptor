@@ -118,26 +118,26 @@ export async function voteOnPost(postID: string, vote: -1 | 0 | 1, session: Sess
 
     //check if post exists
 
-    const { owner, id, postErr } = await supabase
+    const post = await supabase
         .from('Posts')
         .select('owner', 'id')
         .eq('id', postID)
         .single();
-    console.log(owner)
-    if (postErr || !owner) return { err: postErr };
+    console.log(post.data.owner)
+    if (post.err || !post.data.owner) return { err: post.err.message };
 
 
 
     //check if user has already voted on post
-    const { prevVote, err } = await supabase
+    const prevVote = await supabase
         .from('Votes')
         .select('id', 'value')
         .eq('user_id', session.user.id)
 
 
-    console.log(prevVote[0].value)
+    console.log(prevVote.data[0].value)
 
-    if (err) return { err: err.message };
+    if (prevVote.err) return { err: prevVote.err.message };
 
     //if user has already voted, update vote
     if (prevVote) {
@@ -265,6 +265,39 @@ export async function getUserPosts(userID: string | null, range: { start: number
         formattedPosts.push(formatPost(data[i]));
 
     }
+    return { posts: formattedPosts, err: null };
+}
+
+//get posts for main feed (posts by followed users as well as own posts)
+export async function getFeedPosts(range: { start: number, end: number } | null, session: Session | null, supabase: any) {
+    const formattedPosts: Array<PostData> = [];
+    if (!session) return { posts: formattedPosts, err: "No active session" };
+
+    //set default range
+    if (!range) range = { start: 0, end: 10 };
+
+    //get followed users
+    const { data, error } = await supabase
+        .from('Following')
+        .select('following')
+        .eq('follower', session.user.id);
+    if (error) return { posts: formattedPosts, err: error.message };
+
+    //get posts by followed users
+    for (let i = 0; i < data.length; i++) {
+        const { posts, err } = await getUserPosts(data[i].following, range, session, supabase);
+        if (err) return { posts: formattedPosts, err: err.message };
+        formattedPosts.push(...posts);
+    }
+
+    //get own posts
+    const { posts, err } = await getUserPosts(null, range, session, supabase);
+    if (err) return { posts: formattedPosts, err: err.message };
+    formattedPosts.push(...posts);
+
+    //sort posts by date
+    //formattedPosts.sort(function (a, b) { return a.date.getTime() - b.date.getTime() });
+
     return { posts: formattedPosts, err: null };
 }
 

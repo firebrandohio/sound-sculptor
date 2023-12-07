@@ -1,4 +1,4 @@
-import { getUserPosts } from "../../supabase/posts";
+import { getFeedPosts, getUserPosts } from "../../supabase/posts";
 
 export type PostPlaylistData = {
     playlistID: string,
@@ -154,6 +154,11 @@ export async function requestPosts(query: PostQuery, session: any, supabase: any
     //if a user id is provided, get posts for that user
     if (query.userID) {
         return await getUserPosts(query.userID, query.range, session, supabase);
+    }
+
+    if (query.mainFeedFor) {
+        //get posts from main feed
+        return await getFeedPosts(query.range, session, supabase);
     }
     //get posts
     return null;
